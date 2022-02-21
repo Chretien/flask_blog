@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from crypt import methods
+from flask import Flask, render_template, url_for, flash, redirect
 from forms import registration_form, login_form
 
 app = Flask(__name__)
@@ -18,9 +19,12 @@ def about():
 def pandas():
     return render_template('pandas.html')
 
-@app.route("/register")
+@app.route("/register", methods=['GET','POST'])
 def register():
     form = registration_form()
+    if form.validate_on_submit():
+        flash(f'Account Created For {form.username.data}!', 'success')
+        return redirect(url_for('home'))  
     return render_template('register.html', title='Register', form=form)
 
 @app.route("/login")
